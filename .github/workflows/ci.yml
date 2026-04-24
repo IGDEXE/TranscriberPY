@@ -34,7 +34,7 @@ jobs:
 
       - name: Download small sample video
         run: |
-          wget -O sample.mp4 https://filesamples.com/samples/video/mp4/sample_640x360.mp4
+          wget -O sample.mp4 https://samplelib.com/lib/preview/mp4/sample-5s.mp4
 
       - name: Run real transcription test (lightweight)
         run: |
