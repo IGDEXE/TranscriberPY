@@ -104,21 +104,64 @@ Modelos disponíveis:
 
 ---
 
-## ⚠️ Observações
+## 🛡️ Segurança (Veracode)
 
-* Whisper baixa modelos automaticamente (primeira execução demora)
-* Uso intensivo de CPU/RAM dependendo do modelo
-* Paralelismo pode aumentar consumo de memória
+Este projeto possui integração com **Veracode** para análise automatizada de segurança no pipeline CI.
+
+### O que é validado
+
+* **SCA (Software Composition Analysis)**
+  Identifica vulnerabilidades em dependências Python
+
+* **Static Analysis (SAST)**
+  Analisa o código-fonte do projeto
+
+* **Pipeline Scan**
+  Execução rápida de validações durante o CI
 
 ---
 
-## 🧪 CI
+### 🔐 Configuração necessária
 
-O projeto inclui pipeline no GitHub Actions que:
+Configure os seguintes *secrets* no repositório:
+
+```text
+VERACODE_ID
+VERACODE_KEY
+SCA
+```
+
+---
+
+### 📊 Fluxo do pipeline
+
+1. Criação do pacote de análise
+2. Scan de dependências (SCA)
+3. Upload e análise completa no Veracode
+4. Pipeline Scan (validação rápida)
+5. Execução do teste real de transcrição
+
+> O job de execução do projeto só roda após as etapas de segurança.
+
+---
+
+## 🧪 CI (GitHub Actions)
+
+O pipeline automatizado:
 
 * instala dependências
-* roda um teste real com vídeo pequeno
-* valida geração de transcrição
+* gera vídeo com fala sintética
+* executa transcrição real com Whisper
+* valida saída gerada
+* roda análise de segurança com Veracode
+
+---
+
+## ⚠️ Observações
+
+* Whisper baixa modelos automaticamente (primeira execução pode ser mais lenta)
+* Uso intensivo de CPU/RAM dependendo do modelo escolhido
+* Paralelismo aumenta performance, mas também o consumo de memória
 
 ---
 
