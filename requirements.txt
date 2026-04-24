@@ -1,0 +1,4 @@
+openai-whisper==20231117
+torch==2.1.2
+numpy==1.26.4
+tqdm==4.66.1
