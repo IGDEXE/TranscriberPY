@@ -18,32 +18,39 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install ffmpeg
+      - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg espeak
 
       - name: Fix build tooling (whisper compatibility)
         run: |
           python -m pip install --upgrade pip
           pip install "setuptools<80" wheel
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           pip install --no-build-isolation -r requirements.txt
 
-      - name: Download small sample video
+      - name: Generate speech audio
         run: |
-          wget -O sample.mp4 https://samplelib.com/lib/preview/mp4/sample-5s.mp4
+          espeak -s 140 -v en "This is a test transcription from github actions pipeline" -w speech.wav
 
-      - name: Run real transcription test (lightweight)
+      - name: Create sample video with speech
+        run: |
+          ffmpeg -f lavfi -i testsrc=duration=8:size=640x360:rate=30 \
+                 -i speech.wav \
+                 -c:v libx264 -c:a aac -shortest sample.mp4
+
+      - name: Run transcription (real test)
         run: |
           python transcriber.py sample.mp4 \
-            --model tiny \
+            --model base \
             --chunk-minutes 1 \
             --no-parallel
 
-      - name: Validate output file
+      - name: Validate output
         run: |
           test -f sample_transcript.txt
-          test -s sample_transcript.txt
+          cat sample_transcript.txt
+          [ $(wc -c < sample_transcript.txt) -gt 5 ]
